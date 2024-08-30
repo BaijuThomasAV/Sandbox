@@ -1,0 +1,70 @@
+# Define function to calculate P&L components
+def calculate_pnl(delta, gamma, theta, vega, volga, vanna, cross_gamma, spot_price_day1, spot_price_day2, dsigma, dt, relative_difference=False):
+    # Calculate dS based on the relative or absolute difference
+    if relative_difference:
+        dS = (spot_price_day1 / spot_price_day2) - 1  # Relative difference (percentage change)
+        # For FX
+        ##dS = (spot_price_day2 / spot_price_day1) - 1  # Relative difference (percentage change)
+    else:
+        dS = spot_price_day1 - spot_price_day2  # Absolute difference
+
+    # Calculate each P&L component
+    delta_pnl = delta * dS
+    gamma_pnl = 0.5 * gamma * (dS ** 2)
+    theta_pnl = theta * dt
+    vega_pnl = vega * dsigma
+    volga_pnl = 0.5 * volga * (dsigma ** 2)
+    vanna_pnl = vanna * dS * dsigma
+
+    # Cross Gamma P&L: accounts for interaction between spot price and volatility changes
+    cross_gamma_pnl = cross_gamma * dS * dsigma
+
+    # Output each P&L component
+    print(f"Delta P&L: {delta_pnl:.2f}")
+    print(f"Gamma P&L: {gamma_pnl:.2f}")
+    print(f"Theta P&L: {theta_pnl:.2f}")
+    print(f"Vega P&L: {vega_pnl:.2f}")
+    print(f"Volga P&L: {volga_pnl:.2f}")
+    print(f"Vanna P&L: {vanna_pnl:.2f}")
+    print(f"Cross Gamma P&L: {cross_gamma_pnl:.2f}")
+
+    # Calculate and return total P&L
+    total_pnl = delta_pnl + gamma_pnl + theta_pnl + vega_pnl + volga_pnl + vanna_pnl + cross_gamma_pnl
+    print(f"Total P&L: {total_pnl:.2f}")
+    return total_pnl
+
+#  input parameters
+delta_input = -155849.20
+gamma_input = 48.35
+theta_input = -9.7
+vega_input = 7
+volga_input = 3.50  #  input  volga
+vanna_input = 68.36  #  input vanna
+cross_gamma_input = 0.05  #  input cross-gamma
+spot_price_day1 = 104.57
+spot_price_day2 = 102.87
+dsigma_input = 0.38  # Solution needs - Vega Current MD - Vega Previous MD)
+dt_input = 1 / 365  # Input change in time (1 day)
+
+# Call the function with absolute difference
+print("Using Absolute Difference:")
+calculate_pnl(delta_input, gamma_input, theta_input, vega_input, volga_input, vanna_input, cross_gamma_input, spot_price_day1, spot_price_day2, dsigma_input, dt_input, relative_difference=False)
+
+# Call the function with relative difference
+print("\nUsing Relative Difference:")
+calculate_pnl(delta_input, gamma_input, theta_input, vega_input, volga_input, vanna_input, cross_gamma_input, spot_price_day1, spot_price_day2, dsigma_input, dt_input, relative_difference=True)
+
+# Output statements
+print("\nAsset Class Delta Explanation:")
+print("1) Interest Rate (IR) Delta: Uses absolute basis point change.")
+print("2) Credit/Repo Delta: Uses absolute basis point change.")
+print("3) Foreign Exchange (FX) Delta: Uses relative shift in FX rate. (Also, change the formula above)")
+print("4) Equity Delta: Uses relative price change.")
+print("5) Commodity Delta: Uses relative price change.")
+print("6) Vega and Volga is always Absolute change for all asset class.")
+print("7) Theta change - TBD.")
+print("8) Vanna in Solution the dsigma = (Vanna Previous MD - Vanna Current MD   # always Absolute Difference)")
+print("8) Vanna's dS in solution is called (Vanna Previous MD2- Vanna Current MD2) it has the same values as the underlying's settlement price dS and the logic of the Diff values will follow the same as the above asset class rules of Relative vs Absolute  # in solution also drag and drop Risk Factor secondary)")
+print("8) Vanna MDX saved in training file)")
+print("9) Cross_gamma- TBD)")
+print("10) Note: For Taylor VaR, we asks for the shifts and not the prices so the above market data related to dS and dsigma is supplied as Shifts from the client and client can decide relative Vs Absolute)")
