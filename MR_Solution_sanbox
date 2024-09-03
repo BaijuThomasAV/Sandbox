@@ -34,13 +34,13 @@ def calculate_pnl(delta, gamma, theta, vega, volga, vanna, cross_gamma, spot_pri
     return total_pnl
 
 #  input parameters
-delta_input = -155849.20
-gamma_input = 48.35
-theta_input = -9.7
-vega_input = 7
-volga_input = 3.50  #  input  volga
-vanna_input = 68.36  #  input vanna
-cross_gamma_input = 0.05  #  input cross-gamma
+delta_previous = -155849.20
+gamma_previous = 48.35
+theta_previous = -9.7
+vega_previous = 7
+volga_previous = 3.50  #  input  volga
+vanna_previous = 68.36  #  input vanna
+cross_gamma_previous = 0.05  #  input cross-gamma
 spot_price_day1 = 104.57
 spot_price_day2 = 102.87
 dsigma_input = 0.38  # Solution needs - Vega Current MD - Vega Previous MD)
